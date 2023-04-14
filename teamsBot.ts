@@ -4,63 +4,38 @@ import {
   TeamsActivityHandler,
   CardFactory,
   TurnContext,
+  MessagingExtensionAction,
   MessagingExtensionQuery,
   MessagingExtensionResponse,
+  MessagingExtensionActionResponse,
+  AppBasedLinkQuery,
 } from "botbuilder";
 
-export interface DataInterface {
-  likeCount: number;
-}
-
 export class TeamsBot extends TeamsActivityHandler {
-  constructor() {
-    super();
-  }
 
-  // Message extension Code
-  // Search.
-  public async handleTeamsMessagingExtensionQuery(
+  // Link Unfurling.
+  public async handleTeamsAppBasedLinkQuery(
     context: TurnContext,
-    query: MessagingExtensionQuery
+    query: AppBasedLinkQuery
   ): Promise<MessagingExtensionResponse> {
-    const searchQuery = query.parameters[0].value;
-    const response = await axios.get(
-      `http://registry.npmjs.com/-/v1/search?${querystring.stringify({
-        text: searchQuery,
-        size: 8,
-      })}`
-    );
+    const attachment = CardFactory.thumbnailCard("Image Preview Card", query.url, [query.url]);
 
-    const attachments = [];
-    response.data.objects.forEach((obj) => {
-      const heroCard = CardFactory.heroCard(obj.package.name);
-      const preview = CardFactory.heroCard(obj.package.name);
-      preview.content.tap = {
-        type: "invoke",
-        value: { name: obj.package.name, description: obj.package.description },
-      };
-      const attachment = { ...heroCard, preview };
-      attachments.push(attachment);
-    });
-
+    // By default the link unfurling result is cached in Teams for 30 minutes.
+    // The code has set a cache policy and removed the cache for the app. Learn more here: https://learn.microsoft.com/microsoftteams/platform/messaging-extensions/how-to/link-unfurling?tabs=dotnet%2Cadvantages#remove-link-unfurling-cache
     return {
       composeExtension: {
         type: "result",
         attachmentLayout: "list",
-        attachments: attachments,
-      },
-    };
-  }
-
-  public async handleTeamsMessagingExtensionSelectItem(
-    context: TurnContext,
-    obj: any
-  ): Promise<MessagingExtensionResponse> {
-    return {
-      composeExtension: {
-        type: "result",
-        attachmentLayout: "list",
-        attachments: [CardFactory.heroCard(obj.name, obj.description)],
+        attachments: [attachment],
+        suggestedActions: {
+          actions: [
+            {
+              title: "default",
+              type: "setCachePolicy",
+              value: '{"type":"no-cache"}',
+            },
+          ],
+        },
       },
     };
   }

@@ -2,7 +2,7 @@
     "$schema": "https://developer.microsoft.com/en-us/json-schemas/teams/v1.14/MicrosoftTeams.schema.json",
     "manifestVersion": "1.14",
     "version": "1.0.0",
-    "id": "${{TEAMS_APP_ID}}",
+    "id": "01fecd05-21d1-4c3b-8994-8a33d8eee22d",
     "packageName": "com.microsoft.teams.extension",
     "developer": {
         "name": "Teams App, Inc.",
@@ -15,7 +15,7 @@
         "outline": "outline.png"
     },
     "name": {
-        "short": "LinkUnfurlingME-M365-${{TEAMSFX_ENV}}",
+        "short": "LinkUnfurlingME-M365-local",
         "full": "full name for LinkUnfurlingME-M365"
     },
     "description": {
@@ -26,7 +26,7 @@
     "bots": [],
     "composeExtensions": [
         {
-            "botId": "${{BOT_ID}}",
+            "botId": "089248bb-cbf6-4104-b75c-47cae6fd92f8",
             "commands": [
                 {
                     "id": "searchQuery",

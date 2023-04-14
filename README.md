@@ -16,64 +16,89 @@ The changes in this pre-release require upgrades to the TeamsFx configuration fi
 
 Learn more about the changes in this pre-release at [https://aka.ms/teamsfx-v5.0-guide](https://aka.ms/teamsfx-v5.0-guide).
 
-# Search based message extension across Microsoft 365
+# How to use this Message Extension HelloWorld app
 
-Search-based [message extensions](https://docs.microsoft.com/microsoftteams/platform/messaging-extensions/what-are-messaging-extensions?tabs=nodejs) allow users to search an external system and share results through the compose message area of the Microsoft Teams client. You can now build and run your search-based message extensions in Teams, Outlook for Windows desktop and web experiences.
+A Message Extension allows users to interact with your web service while composing messages in the Microsoft Teams client. Users can invoke your web service to assist message composition, from the message compose box, or from the search bar.
 
-![Search app demo](https://user-images.githubusercontent.com/11220663/167868361-40ffaaa3-0300-4313-ae22-0f0bab49c329.png)
+Message Extensions are implemented on top of the Bot support architecture within Teams.
+
+This is a simple hello world application with Message extension capabilities.
 
 ## Prerequisites
 
 - [Node.js](https://nodejs.org/), supported versions: 14, 16, 18
-- An M365 account. If you do not have M365 account, apply one from [M365 developer program](https://developer.microsoft.com/microsoft-365/dev-program)
-- [Set up your dev environment for extending Teams apps across Microsoft 365](https://aka.ms/teamsfx-m365-apps-prerequisites)
-> Please note that after you enrolled your developer tenant in Office 365 Target Release, it may take couple days for the enrollment to take effect.
-- [Teams Toolkit Visual Studio Code Extension](https://aka.ms/teams-toolkit) or [TeamsFx CLI](https://aka.ms/teamsfx-cli)
+- An M365 account. If you do not have M365 account, apply one from [M365 developer program](https://developer.microsoft.com/en-us/microsoft-365/dev-program)
+- [Teams Toolkit Visual Studio Code Extension](https://aka.ms/teams-toolkit) version after 4.0.0 or [TeamsFx CLI](https://aka.ms/teamsfx-cli)
 
-## Getting Started
+## Debug
 
-Follow below instructions to get started with this application template for local debugging.
+- From Visual Studio Code: Start debugging the project by hitting the `F5` key in Visual Studio Code.
+- Alternatively use the `Run and Debug Activity Panel` in Visual Studio Code and click the `Run and Debug` green arrow button.
+- From TeamsFx CLI: 
+  - Executing the command `teamsfx provision --env local` in your project directory.
+  - Executing the command `teamsfx deploy --env local` in your project directory.
+  - Executing the command `teamsfx preview --env local` in your project directory.
 
-### Test your application with Visual Studio Code
+## Edit the manifest
 
-1. Press `F5` or use the `Run and Debug Activity Panel` in Visual Studio Code.
-1. Select a target Microsoft application where the message extension runs: `Debug in Teams`, `Debug in Outlook` and click the `Run and Debug` green arrow button.
+You can find the Teams app manifest in `./appPackage` folder. The folder contains one manifest file:
+* `manifest.json`: Manifest file for Teams app running locally or running remotely (After deployed to Azure).
 
-### Test your application with TeamsFx CLI
+This file contains template arguments with `${{...}}` statements which will be replaced at build time. You may add any extra properties or permissions you require to this file. See the [schema reference](https://docs.microsoft.com/en-us/microsoftteams/platform/resources/schema/manifest-schema) for more information.
 
-1. Executing the command `teamsfx provision --env local` in your project directory.
-1. Executing the command `teamsfx deploy --env local` in your project directory.
-1. Executing the command `teamsfx preview --env local --m365-host <m365-host>` in your project directory, where options for `m365-host` are `teams` or `outlook`.
+## Deploy to Azure
 
-## Use this message extension app
+Deploy your project to Azure by following these steps:
 
-This template provides a simple functionality to search for `npm` packages and render the result in [Adaptive Card](https://docs.microsoft.com/microsoftteams/platform/task-modules-and-cards/cards/design-effective-cards?tabs=design).
+| From Visual Studio Code                                                                                                                                                                                                                                                                                                                                                  | From TeamsFx CLI                                                                                                                                                                                                                    |
+| :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| <ul><li>Open Teams Toolkit, and sign into Azure by clicking the `Sign in to Azure` under the `ACCOUNTS` section from sidebar.</li> <li>After you signed in, select a subscription under your account.</li><li>Open the Teams Toolkit and click `Provision in the cloud` from DEPLOYMENT section or open the command palette and select: `Teams: Provision in the cloud`.</li><li>Open the Teams Toolkit and click `Deploy to the cloud` or open the command palette and select: `Teams: Deploy to the cloud`.</li></ul> | <ul> <li>Run command `teamsfx account login azure`.</li> <li>Run command `teamsfx provision --env dev`.</li> <li>Run command: `teamsfx deploy --env dev`. </li></ul> |
 
-### Use this app in Teams
+> Note: Provisioning and deployment may incur charges to your Azure Subscription.
 
-- `@mention` Your message extension from the `search box area`.
+## Preview
 
-    ![AtBotFromSearch](https://user-images.githubusercontent.com/11220663/167869365-3828ef85-64f7-43bf-9f75-99d882370154.png)
+Once the provisioning and deployment steps are finished, you can preview your app:
 
-- `@mention` your message extension from the `compose message area`.
+- From Visual Studio Code
 
-    ![AtBotFromMessage](https://user-images.githubusercontent.com/11220663/167869475-528736fa-d0f1-4bf8-9c23-fdffae984802.png)
+  1. Open the `Run and Debug Activity Panel`.
+  1. Select `Launch Remote (Edge)` or `Launch Remote (Chrome)` from the launch configuration drop-down.
+  1. Press the Play (green arrow) button to launch your app - now running remotely from Azure.
 
-- Click the `...` under compose message area, find your message extension.
+- From TeamsFx CLI: execute `teamsfx preview --env dev` in your project directory to launch your application.
 
-    ![ComposeArea](https://user-images.githubusercontent.com/11220663/167869578-ce33b2ef-f5f2-4be7-a7a0-57e53b6f7c36.png)
+## Validate manifest file
 
-### Use this app in Outlook
+To check that your manifest file is valid:
 
-- Click the "More apps" icon under compose email area, find your message extension.
-  
-    ![InOutlook](https://user-images.githubusercontent.com/11220663/167869656-20225f14-f982-4e47-8dd0-050285d56853.png)
+- From Visual Studio Code: open the command palette and select: `Teams: Validate manifest file`.
+- From TeamsFx CLI: run command `teamsfx validate` in your project directory.
 
-## References
+## Package
 
-* [Extend a Teams message extension across Microsoft 365](https://docs.microsoft.com/microsoftteams/platform/m365-apps/extend-m365-teams-message-extension?tabs=manifest-teams-toolkit)
-* [Bot Framework Documentation](https://docs.botframework.com/)
-* [Teams Toolkit Documentations](https://docs.microsoft.com/microsoftteams/platform/toolkit/teams-toolkit-fundamentals)
-* [Teams Toolkit CLI](https://docs.microsoft.com/microsoftteams/platform/toolkit/teamsfx-cli)
-* [TeamsFx SDK](https://docs.microsoft.com/microsoftteams/platform/toolkit/teamsfx-sdk)
-* [Teams Toolkit Samples](https://github.com/OfficeDev/TeamsFx-Samples)
+- From Visual Studio Code: open the Teams Toolkit and click `Zip Teams app package` or open the command palette and select `Teams: Zip Teams app package`.
+- Alternatively, from the command line run `teamsfx package` in the project directory.
+
+## Publish to Teams
+
+Once deployed, you may want to distribute your application to your organization's internal app store in Teams. Your app will be submitted for admin approval.
+
+- From Visual Studio Code: open the Teams Toolkit and click `Publish to Teams` or open the command palette and select: `Teams: Publish to Teams`.
+- From TeamsFx CLI: run command `teamsfx publish` in your project directory.
+
+## Play with Message Extension
+
+This template provides some sample functionality:
+
+- You can paste a link that "unfurls" (`.botframework.com` is monitored in this template) and a card will be rendered.
+
+  ![ComposeArea](./images/LinkUnfurlingImage.png)
+
+## Further reading
+
+### Message Extension
+
+- [Search Command](https://docs.microsoft.com/en-us/microsoftteams/platform/messaging-extensions/how-to/search-commands/define-search-command)
+- [Action Command](https://docs.microsoft.com/en-us/microsoftteams/platform/messaging-extensions/how-to/action-commands/define-action-command)
+- [Link Unfurling](https://docs.microsoft.com/en-us/microsoftteams/platform/messaging-extensions/how-to/link-unfurling?tabs=dotnet)
